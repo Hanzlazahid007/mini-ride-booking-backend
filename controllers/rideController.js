@@ -1,6 +1,7 @@
 const { v4: uuidv4 } = require("uuid");
 const User = require("../modals/User");
 const Ride = require("../modals/Ride");
+const { updateRiderAvailability } = require("../middleware/middleware");
 
 exports.bookSpecificRide =  async (req, res) => {
   try {
