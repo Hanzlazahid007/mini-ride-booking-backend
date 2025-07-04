@@ -5,35 +5,35 @@ dotenv.config();
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const authRoutes = require("./routes/authRoutes");
-const riderRoutes = require("./routes/riderRoutes")
-const rideRoutes = require("./routes/rideRoutes")
+const riderRoutes = require("./routes/riderRoutes");
+const rideRoutes = require("./routes/rideRoutes");
 const mongoose = require("mongoose");
 const { authenticateToken } = require("./middleware/middleware");
 
-
-
-
-
 const app = express();
 const PORT = process.env.PORT || 5000;
-const JWT_SECRET = process.env.JWT_SECRET || "your-secret-key-change-in-production";
-const MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost:27017/ridebook";
-console.log(MONGODB_URI)
+const JWT_SECRET =
+  process.env.JWT_SECRET || "your-secret-key-change-in-production";
+const MONGODB_URI =
+  process.env.MONGODB_URI || "mongodb://localhost:27017/ridebook";
+console.log(MONGODB_URI);
 
 // Middleware
 app.use(cors());
 app.use(express.json());
 
 // MongoDB Connection
-mongoose.connect(MONGODB_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-}).then(() => {
-  console.log("Connected to MongoDB");
-}).catch((err) => {
-  console.error("MongoDB connection error:", err);
-});
-
+mongoose
+  .connect(MONGODB_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
+  .then(() => {
+    console.log("Connected to MongoDB");
+  })
+  .catch((err) => {
+    console.error("MongoDB connection error:", err);
+  });
 
 // Health check
 app.get("/api/health", (req, res) => {
@@ -41,25 +41,9 @@ app.get("/api/health", (req, res) => {
 });
 
 // Auth Routes
-app.use("/api/auth",authRoutes );
-app.use("/api/rides",rideRoutes)
-app.use("/api/riders",riderRoutes)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+app.use("/api/auth", authRoutes);
+app.use("/api/rides", rideRoutes);
+app.use("/api/riders", riderRoutes);
 
 // Get all rides (for debugging - remove in production)
 app.get("/api/rides/all", authenticateToken, async (req, res) => {
@@ -89,7 +73,6 @@ app.listen(PORT, () => {
   console.log(`📍 Health check: http://localhost:${PORT}/api/health`);
   console.log(`📚 API Base URL: http://localhost:${PORT}/api`);
 });
-
 
 module.exports = app;
 

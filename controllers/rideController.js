@@ -3,13 +3,14 @@ const User = require("../modals/User");
 const Ride = require("../modals/Ride");
 const { updateRiderAvailability } = require("../middleware/middleware");
 
-exports.bookSpecificRide =  async (req, res) => {
+exports.bookSpecificRide = async (req, res) => {
   try {
     const { pickup, dropoff, rideType, riderId } = req.body;
-
     // Validation
     if (!pickup || !dropoff || !rideType) {
-      return res.status(400).json({ error: "Pickup, dropoff, and ride type are required" });
+      return res
+        .status(400)
+        .json({ error: "Pickup, dropoff, and ride type are required" });
     }
 
     if (!["bike", "car", "rickshaw"].includes(rideType)) {
@@ -45,10 +46,14 @@ exports.bookSpecificRide =  async (req, res) => {
         return res.status(404).json({ error: "Rider not found" });
       }
       if (rider.availabilityStatus !== "available") {
-        return res.status(400).json({ error: "Selected rider is not available" });
+        return res
+          .status(400)
+          .json({ error: "Selected rider is not available" });
       }
       if (rider.vehicleType !== rideType) {
-        return res.status(400).json({ error: "Rider vehicle type does not match requested ride type" });
+        return res.status(400).json({
+          error: "Rider vehicle type does not match requested ride type",
+        });
       }
     }
 
@@ -83,27 +88,33 @@ exports.bookSpecificRide =  async (req, res) => {
     console.error("Book ride error:", error);
     res.status(500).json({ error: "Internal server error" });
   }
-}
+};
 
-exports.rideHistoryPassenger  = async (req, res) => {
+exports.rideHistoryPassenger = async (req, res) => {
   try {
     if (req.user.userType !== "passenger") {
-      return res.status(403).json({ error: "Only passengers can view ride history" });
+      return res
+        .status(403)
+        .json({ error: "Only passengers can view ride history" });
     }
 
-    const userRides = await Ride.find({ userId: req.user.id }).sort({ createdAt: -1 });
+    const userRides = await Ride.find({ userId: req.user.id }).sort({
+      createdAt: -1,
+    });
 
     res.json({ rides: userRides });
   } catch (error) {
     console.error("Get ride history error:", error);
     res.status(500).json({ error: "Internal server error" });
   }
-}
+};
 
 exports.currentRidePassenger = async (req, res) => {
   try {
     if (req.user.userType !== "passenger") {
-      return res.status(403).json({ error: "Only passengers can view current ride" });
+      return res
+        .status(403)
+        .json({ error: "Only passengers can view current ride" });
     }
 
     const currentRide = await Ride.findOne({
@@ -120,37 +131,47 @@ exports.currentRidePassenger = async (req, res) => {
     console.error("Get current ride error:", error);
     res.status(500).json({ error: "Internal server error" });
   }
-}
+};
 
 exports.availableRideForRider = async (req, res) => {
   try {
     if (req.user.userType !== "rider") {
-      return res.status(403).json({ error: "Only riders can view available rides" });
+      return res
+        .status(403)
+        .json({ error: "Only riders can view available rides" });
     }
 
-    const availableRides = await Ride.find({ status: "requested", riderId: null }).sort({ createdAt: -1 });
+    const availableRides = await Ride.find({
+      status: "requested",
+      riderId: null,
+      rideType: req?.user?.vehicleType,
+    }).sort({ createdAt: -1 });
 
     res.json({ rides: availableRides });
   } catch (error) {
     console.error("Get available rides error:", error);
     res.status(500).json({ error: "Internal server error" });
   }
-}
+};
 
 exports.myRides = async (req, res) => {
   try {
     if (req.user.userType !== "rider") {
-      return res.status(403).json({ error: "Only riders can view their rides" });
+      return res
+        .status(403)
+        .json({ error: "Only riders can view their rides" });
     }
 
-    const myRides = await Ride.find({ riderId: req.user.id }).sort({ createdAt: -1 });
+    const myRides = await Ride.find({ riderId: req.user.id }).sort({
+      createdAt: -1,
+    });
 
     res.json({ rides: myRides });
   } catch (error) {
     console.error("Get my rides error:", error);
     res.status(500).json({ error: "Internal server error" });
   }
-}
+};
 
 exports.updateRideStatus = async (req, res) => {
   try {
@@ -162,13 +183,17 @@ exports.updateRideStatus = async (req, res) => {
       return res.status(400).json({ error: "Status is required" });
     }
 
-    if (!["accepted", "rejected", "in-progress", "completed"].includes(status)) {
+    if (
+      !["accepted", "rejected", "in-progress", "completed"].includes(status)
+    ) {
       return res.status(400).json({ error: "Invalid status" });
     }
 
     // Check if user is rider
     if (req.user.userType !== "rider") {
-      return res.status(403).json({ error: "Only riders can update ride status" });
+      return res
+        .status(403)
+        .json({ error: "Only riders can update ride status" });
     }
 
     // Find ride
@@ -192,7 +217,9 @@ exports.updateRideStatus = async (req, res) => {
     if (status === "accepted") {
       // Check if ride is available for acceptance
       if (ride.status !== "requested") {
-        return res.status(400).json({ error: "Ride is not available for acceptance" });
+        return res
+          .status(400)
+          .json({ error: "Ride is not available for acceptance" });
       }
 
       // Assign rider to the ride
@@ -207,7 +234,9 @@ exports.updateRideStatus = async (req, res) => {
     } else {
       // For in-progress and completed status
       if (ride.riderId !== req.user.id) {
-        return res.status(403).json({ error: "You can only update rides assigned to you" });
+        return res
+          .status(403)
+          .json({ error: "You can only update rides assigned to you" });
       }
 
       ride.status = status;
@@ -226,4 +255,4 @@ exports.updateRideStatus = async (req, res) => {
     console.error("Update ride status error:", error);
     res.status(500).json({ error: "Internal server error" });
   }
-}
+};

@@ -1,7 +1,7 @@
 const jwt = require("jsonwebtoken");
 const User = require("../modals/User");
-const JWT_SECRET = process.env.JWT_SECRET || "your-secret-key-change-in-production";
-
+const JWT_SECRET =
+  process.env.JWT_SECRET || "your-secret-key-change-in-production";
 
 // Authentication middleware
 exports.authenticateToken = (req, res, next) => {
@@ -28,9 +28,10 @@ exports.generateToken = (user) => {
       id: user.id,
       email: user.email,
       userType: user.userType,
+      vehicleType: user.vehicleType,
     },
     JWT_SECRET,
-    { expiresIn: "24h" },
+    { expiresIn: "24h" }
   );
 };
 
@@ -38,6 +39,6 @@ exports.generateToken = (user) => {
 exports.updateRiderAvailability = async (riderId, status) => {
   await User.findOneAndUpdate(
     { id: riderId, userType: "rider" },
-    { availabilityStatus: status },
+    { availabilityStatus: status }
   );
 };
