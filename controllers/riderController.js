@@ -1,3 +1,4 @@
+const { updateRiderAvailability } = require("../middleware/middleware");
 const Ride = require("../modals/Ride");
 const User = require("../modals/User");
 const { v4: uuidv4 } = require("uuid");
@@ -108,7 +109,9 @@ exports.bookRide = async (req, res) => {
   }
 }
 
-exports.updateRiderAvailability =  async (req, res) => {
+
+
+ exports.updateRiderAvailable = async (req, res) => {
   try {
     const { status } = req.body;
 
@@ -130,4 +133,4 @@ exports.updateRiderAvailability =  async (req, res) => {
     console.error("Update availability error:", error);
     res.status(500).json({ error: "Internal server error" });
   }
-}
+};

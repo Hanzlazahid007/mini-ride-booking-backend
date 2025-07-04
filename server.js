@@ -42,8 +42,8 @@ app.get("/api/health", (req, res) => {
 
 // Auth Routes
 app.use("/api/auth",authRoutes );
-app.use("api/rides",rideRoutes)
-app.use("api/riders",riderRoutes)
+app.use("/api/rides",rideRoutes)
+app.use("/api/riders",riderRoutes)
 
 
 
@@ -91,6 +91,7 @@ app.listen(PORT, () => {
 });
 
 
+module.exports = app;
 
 // =======================
 // const express = require("express");
