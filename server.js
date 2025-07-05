@@ -12,10 +12,8 @@ const { authenticateToken } = require("./middleware/middleware");
 
 const app = express();
 const PORT = process.env.PORT || 5000;
-const JWT_SECRET =
-  process.env.JWT_SECRET || "your-secret-key-change-in-production";
-const MONGODB_URI =
-  process.env.MONGODB_URI || "mongodb://localhost:27017/ridebook";
+const JWT_SECRET = process.env.JWT_SECRET;
+const MONGODB_URI = process.env.MONGODB_URI;
 console.log(MONGODB_URI);
 
 // Middleware

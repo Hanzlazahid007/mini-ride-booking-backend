@@ -1,7 +1,6 @@
 const jwt = require("jsonwebtoken");
 const User = require("../modals/User");
-const JWT_SECRET =
-  process.env.JWT_SECRET || "your-secret-key-change-in-production";
+const JWT_SECRET = process.env.JWT_SECRET;
 
 // Authentication middleware
 exports.authenticateToken = (req, res, next) => {
