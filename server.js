@@ -45,27 +45,11 @@ app.use("/api/auth", authRoutes);
 app.use("/api/rides", rideRoutes);
 app.use("/api/riders", riderRoutes);
 
-// Get all rides (for debugging - remove in production)
-app.get("/api/rides/all", authenticateToken, async (req, res) => {
-  try {
-    const allRides = await Ride.find().sort({ createdAt: -1 });
-    res.json({ rides: allRides });
-  } catch (error) {
-    console.error("Get all rides error:", error);
-    res.status(500).json({ error: "Internal server error" });
-  }
-});
-
 // Error handling middleware
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).json({ error: "Something went wrong!" });
 });
-
-// 404 handler
-// app.use("*", (req, res) => {
-//   res.status(404).json({ error: "Route not found" });
-// });
 
 // Start server
 app.listen(PORT, () => {
